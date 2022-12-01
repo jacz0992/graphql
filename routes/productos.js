@@ -1,23 +1,39 @@
 import express from "express";
-import Productos from "../api/productos.js";
 import { getProdRandom } from "../services/generador/productos.js";
-let productos = new Productos();
 const router = express.Router();
+/* -------------------------------------- */
+/*       FACTORY - MongoDB                */
+/* -------------------------------------- */
 
-// router.get("/productos/listar", async (req, res) => {
-// 	res.json(await productos.listarAll());
-// });
+import Productos from "../api/productos.js";
+let productos = new Productos();
 
-// router.get("/productos/listar/:id", async (req, res) => {
-// 	let { id } = req.params;
-// 	res.json(await productos.listar(id));
-// });
+/* -------------------------------------- */
+/*       FACTORY - Memory                */
+/* -------------------------------------- */
+// import productos from "../db/factory.js";
 
-// router.post("/productos/guardar", async (req, res) => {
-// 	let producto = req.body;
-// 	await productos.guardar(producto);
-// 	res.json(producto);
-// });
+router.get("/productos/listar", async (req, res) => {
+	
+	res.json(await productos.listarAll());
+});
+
+router.get("/productos/listar/:id", async (req, res) => {
+	let { id } = req.params;
+	console.log(req.params.id);
+	res.json(await productos.buscar(id));
+});
+
+router.get("/productos/buscardto/:id", async (req, res) => {
+	let { id } = req.params;
+	res.json(await productos.buscarDTO(id));
+});
+
+router.post("/productos/guardar", async (req, res) => {
+	let producto = req.body;
+	await productos.guardar(producto);
+	res.json(producto);
+});
 
 router.put("/productos/actualizar/:id", async (req, res) => {
 	let { id } = req.params;

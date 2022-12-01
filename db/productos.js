@@ -1,27 +1,25 @@
-import * as model from './model.js'
+import * as model from "../models/model.js";
+// import * as model from "./model.js";
 
 class ProductosMongoDB {
-    constructor() {}
+	constructor() {}
 
-    leer(id) {
-        return id? 
-            model.productos.find({_id:id}) : 
-            model.productos.find({})
-    }
-    
-    guardar(producto) {
-        const productoModel = new model.productos(producto);
-        return productoModel.save()
-    }
+	leer(id) {
+		return id ? model.productos.find({ _id: id }) : model.productos.find({});
+	}
 
-    actualizar(producto, id) {
-        return model.productos.updateOne( {_id: id }, { $set: {...producto} })
-    }
-    
-    borrar(id) {
-        return model.productos.deleteOne( {_id: id })
-    }
+	guardar(producto) {
+		const productoModel = new model.productos(producto);
+		return productoModel.save();
+	}
+
+	actualizar(producto, id) {
+		return model.productos.updateOne({ _id: id }, { $set: { ...producto } });
+	}
+
+	borrar(id) {
+		return model.productos.deleteOne({ _id: id });
+	}
 }
 
-export default ProductosMongoDB
-
+export default ProductosMongoDB;

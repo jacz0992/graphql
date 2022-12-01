@@ -5,15 +5,16 @@ import MongoStore from "connect-mongo";
 import handlebars from "express-handlebars";
 import bCrypt from "bcrypt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { User } from "../models/user.js";
+import { user } from "../models/model.js";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import config from "../config.js";
 const app = express();
-const MONGO_DB_URI =
-	"mongodb+srv://caro:12345699@cluster0.cwvci.mongodb.net/passport?retryWrites=true&w=majority";
+
 app.use(
 	session({
 		store: MongoStore.create({
-			mongoUrl: MONGO_DB_URI,
+			mongoUrl: config.MONGO_DB_URI,
 			ttl: 600,
 		}),
 		secret: "sh",
@@ -104,12 +105,11 @@ passport.use(
 var createHash = function (password) {
 	return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 };
-// Pela serialização se guarda o id da sessão:
+
 passport.serializeUser((user, done) => {
 	done(null, user._id);
 });
 
-// Pela desserialização de Passport a partir do id se obtem o usuário
 passport.deserializeUser((id, done) => {
 	User.findById(id, function (err, user) {
 		done(err, user);
@@ -149,7 +149,6 @@ app.get("/failregister", (req, res) => {
 	res.render("register-error", {});
 });
 
-// Logout é uma função de passport para limpar a sessão. Este req.user.username é criado pelo passport quando serializa o usuário
 app.get("/logout", (req, res) => {
 	const { username } = req.user;
 	req.logout();
@@ -163,7 +162,7 @@ app.get("/login", (req, res) => {
 		res.render("login");
 	}
 });
-// Pelo req.user.username não se devolve só o ID, mas todo o usuário:
+
 app.get("/", (req, res) => {
 	if (req.isAuthenticated()) {
 		res.render("home", { username: req.user.username });
